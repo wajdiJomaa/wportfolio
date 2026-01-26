@@ -1,8 +1,6 @@
-staticSites:
-  - name: portfolio
+services:
+  - type: web
+    name: vue-app
+    env: static
     buildCommand: npm install && npm run build
-    publishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    staticPublishPath: dist
