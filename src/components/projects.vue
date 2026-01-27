@@ -3,37 +3,34 @@ import ProjectCard from './project.vue';
 
 const projects = [
   {
-    title: 'Modern Portfolio',
-    description: 'A simplistic, highly polished portfolio website built with Vue 3 and Vite.',
-    technologies: ['Vue 3', 'Vite', 'CSS', 'Anime.js'],
+    title: 'SHELL',
+    description: 'A POSIX like Shell built using Python with various functionalities built-in commands, execute from PATH, redirect, pipeline, autocomplete, history',
+    technologies: ['Python', 'OS', 'Bash'],
     link: '#',
-    image: 'https://via.placeholder.com/600x400/222/fff?text=Project+1'
+    image: '/images/shell.png'
   },
   {
     title: 'E-Commerce Platform',
-    description: 'Scalable e-commerce solution with cart functionality and payment integration.',
-    technologies: ['React', 'Node.js', 'Express', 'MongoDB'],
+    description: 'An E-Store for small business, with admin management panel and flexible layout for customers to filter and order products.',
+    technologies: ['Flask', 'Jinja', 'Sqlite', 'HTMX'],
     link: '#',
-    image: 'https://via.placeholder.com/600x400/333/fff?text=Project+2'
+    image: '/images/ecommerce.png'
   },
   {
-    title: 'Task Management App',
-    description: 'Productivity tool for teams to manage tasks and collaborate in real-time.',
-    technologies: ['Angular', 'Firebase', 'Material UI'],
+    title: 'CHIP-8 Emulator',
+    description: 'An Emulator for the CHIP-8 virtual machine built using python and SDL',
+    technologies: ['Python', 'Emulator', 'SDL'],
     link: '#',
-    image: 'https://via.placeholder.com/600x400/444/fff?text=Project+3'
+    image: '/images/chip8.png'
   }
 ];
 </script>
 
 <template>
-  <section class="projects-section container py-5">
-    <div class="row mb-4">
+  <section class="projects-section container-fluid py-4 px-5">
+    <div class="row mb-5">
       <div class="col-12 text-start">
-        <h2 class="display-4 fw-bold text-white mb-2">Selected Works</h2>
-        <p class="text-muted lead mb-3" style="max-width: 600px;">
-          A showcase of projects that demonstrate my passion for clean code and intuitive design.
-        </p>
+        <h2 class="display-5 fw-bold text-white">Selected Works</h2>
         <a href="#" class="btn btn-outline-light rounded-pill px-4">View All Projects</a>
       </div>
     </div>

@@ -1,12 +1,35 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import anime from 'animejs';
 
-const skills = [
+const skillsRaw = [
   'Python', 'Java', 'SpringBoot', 'Flask', 
   'FastAPI', 'JavaScript', 'HTML', 'CSS', 'SQL', "MongoDB", "VueJs",
   "Linux", "Docker", "Postgresql", "NonSQL", "OOP", "BootStrap"
-];
+].sort(() => Math.random() - 0.5);
+
+const isMobile = ref(false);
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+// Duplicate skills on mobile for seamless looping
+const items = computed(() => {
+  return isMobile.value ? [...skillsRaw, ...skillsRaw] : skillsRaw;
+});
+
+const getBubbleStyle = (index) => {
+  if (isMobile.value) {
+    // CSS handles positioning on mobile
+    return {};
+  }
+
+  // Desktop styles (randomly placed left/right)
+  return index % 2 === 0
+    ? { left: Math.random() * 40 + '%', top: Math.random() * 70 + '%' }
+    : { right: Math.random() * 40 + '%', top: Math.random() * 70 + '%' };
+};
 
 const animateBubble = (el) => {
   const xRange = window.innerWidth / 3;
@@ -26,8 +49,18 @@ const animateBubble = (el) => {
 };
 
 onMounted(() => {
-  const bubbles = document.querySelectorAll('.skill-bubble');
-  bubbles.forEach(bubble => animateBubble(bubble));
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  // Only run anime.js on desktop
+  if (!isMobile.value) {
+    const bubbles = document.querySelectorAll('.skill-bubble');
+    bubbles.forEach(bubble => animateBubble(bubble));
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
 });
 </script>
 
@@ -48,16 +81,15 @@ onMounted(() => {
 
     <!-- Skill Bubbles -->
     <div class="bubbles-container">
-      <div 
-        v-for="(skill, index) in skills" 
-        :key="skill" 
-        class="skill-bubble"
-        :style="index % 2 === 0
-  ? { left: Math.random() * 40 + '%', top: Math.random() * 70 + '%' }
-  : { right: Math.random() * 40 + '%', top: Math.random() * 70 + '%' }
-"
-      >
-        {{ skill }}
+      <div class="marquee-track">
+        <div 
+          v-for="(skill, index) in items" 
+          :key="`${skill}-${index}`" 
+          class="skill-bubble"
+          :style="getBubbleStyle(index)"
+        >
+          {{ skill }}
+        </div>
       </div>
     </div>
   </section>
@@ -103,7 +135,7 @@ onMounted(() => {
   margin-top: 0.5rem;
 }
 
-/* Bubbles */
+/* Bubbles Container */
 .bubbles-container {
   position: absolute;
   top: 0;
@@ -112,6 +144,15 @@ onMounted(() => {
   height: 100%;
   pointer-events: none; /* Let clicks pass through */
   z-index: 1;
+}
+
+/* Track Wrapper */
+.marquee-track {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .skill-bubble {
@@ -154,6 +195,62 @@ onMounted(() => {
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .bubbles-container {
+    position: absolute;
+    top: auto;
+    bottom: 15%; /* Position strip */
+    left: 0;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  /* Make track a flexible row that moves */
+  .marquee-track {
+    position: relative;
+    display: flex;
+    gap: 3rem;
+    width: max-content; /* Allow content to dictate width */
+    animation: scroll-track 20s linear infinite; /* Animate the whole track */
+  }
+
+  .skill-bubble {
+    position: relative; /* Reset absolute */
+    inset: auto !important;
+    transform: none !important;
+    
+    /* Thin text style */
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    font-weight: 300;
+    
+    flex-shrink: 0;
+  }
+
+  .skill-bubble:nth-child(n+9) {
+    display: block;
+  }
+}
+
+@keyframes scroll-track {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); /* Move half the total width (the length of one full set) */
   }
 }
 </style>
