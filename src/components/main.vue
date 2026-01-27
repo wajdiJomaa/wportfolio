@@ -42,11 +42,11 @@ const animateBubble = (el) => {
     targets: el,
     translateX: () => anime.random(-xRange, xRange),
     translateY: () => anime.random(-yRange, yRange),
-    scale: () => anime.random(0.6, 0.8),
+    scale: () => 0.7,
     opacity: [
        { value: [0, 1], duration: duration * 0.1, easing: 'linear' },
-       { value: 1, duration: duration * 0.8 },
-       { value: 0, duration: duration * 0.1, easing: 'linear' }
+       { value: 1, duration: duration * 0.85 },
+       { value: 0, duration: duration * 0.05, easing: 'linear' }
     ],
     duration: duration,
     delay: () => anime.random(2000, 5000),
@@ -75,7 +75,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="hero-section d-flex align-items-center justify-content-center text-center p-5 position-relative">
+<section id="home" class="hero-section d-flex align-items-center justify-content-center text-center p-5 position-relative">
     <div class="content-wrapper position-relative" style="z-index: 2;">
       <h1 class="name mb-3">Wajdi Jomaa</h1>
       <p class="description mb-4">
@@ -123,6 +123,7 @@ onUnmounted(() => {
   -webkit-text-fill-color: transparent;
   opacity: 0;
   animation: slideUpFade 1s ease-out 0.2s forwards, shimmer 3s linear infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
 }
 
 @keyframes shimmer {
@@ -181,7 +182,7 @@ onUnmounted(() => {
   font-weight: 500;
   font-family: 'JetBrains Mono', monospace;
   white-space: nowrap;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.05), 0 0 20px rgba(255, 255, 255, 0.2);
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 

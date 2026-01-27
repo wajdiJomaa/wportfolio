@@ -10,7 +10,7 @@ const toggleMenu = () => {
 
 
 <template>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark py-3 px-5">
+<nav class="navbar navbar-expand-md navbar-dark py-3 px-5" style="background-color: #000000;">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Wajdi Jomaa</a>
     <button 
@@ -28,13 +28,13 @@ const toggleMenu = () => {
     >
       <ul class="navbar-nav gap-3 align-items-center sm-center">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" href="#home">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Projects</a>
+          <a class="nav-link" href="#projects">Projects</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Blogs</a>
+          <a class="nav-link" href="#blogs">Blogs</a>
         </li>
       </ul>
 
@@ -56,11 +56,35 @@ const toggleMenu = () => {
     background: rgba(33, 37, 41, 0.95);
     position: absolute;
     top: 100%;
-    left: 0;
     right: 0;
     padding: 1rem;
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+}
+
+.nav-link {
+  position: relative;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #fff !important;
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 </style>
