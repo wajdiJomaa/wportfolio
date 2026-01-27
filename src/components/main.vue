@@ -2,11 +2,13 @@
 import { onMounted, onUnmounted, ref, computed } from 'vue';
 import anime from 'animejs';
 
-const skillsRaw = [
+const _skillsRaw = [
   'Python', 'Java', 'SpringBoot', 'Flask', 
   'FastAPI', 'JavaScript', 'HTML', 'CSS', 'SQL', "MongoDB", "VueJs",
   "Linux", "Docker", "Postgresql", "NonSQL", "OOP", "BootStrap"
-].sort(() => Math.random() - 0.5);
+];
+
+const skillsRaw = _skillsRaw.concat(_skillsRaw)
 
 const isMobile = ref(false);
 
@@ -27,21 +29,27 @@ const getBubbleStyle = (index) => {
 
   // Desktop styles (randomly placed left/right)
   return index % 2 === 0
-    ? { left: Math.random() * 40 + '%', top: Math.random() * 70 + '%' }
-    : { right: Math.random() * 40 + '%', top: Math.random() * 70 + '%' };
+    ? { left: Math.random() * 50 + '%', top: Math.random() * 80 + '%' }
+    : { right: Math.random() * 50 + '%', top: Math.random() * 80 + '%' };
 };
 
 const animateBubble = (el) => {
-  const xRange = window.innerWidth / 3;
-  const yRange = window.innerHeight / 3;
+  const xRange = window.innerWidth / 10;
+  const yRange = window.innerHeight / 10;
+  const duration = anime.random(6000, 10000); // Slower movement
 
   anime({
     targets: el,
     translateX: () => anime.random(-xRange, xRange),
     translateY: () => anime.random(-yRange, yRange),
-    scale: () => anime.random(0.8, 1),
-    duration: () => anime.random(2000, 4000),
-    delay: () => anime.random(0, 200),
+    scale: () => anime.random(0.6, 0.8),
+    opacity: [
+       { value: [0, 1], duration: duration * 0.1, easing: 'linear' },
+       { value: 1, duration: duration * 0.8 },
+       { value: 0, duration: duration * 0.1, easing: 'linear' }
+    ],
+    duration: duration,
+    delay: () => anime.random(2000, 5000),
     easing: 'easeInOutQuad',
     direction: 'alternate',
     loop: true
@@ -55,6 +63,8 @@ onMounted(() => {
   // Only run anime.js on desktop
   if (!isMobile.value) {
     const bubbles = document.querySelectorAll('.skill-bubble');
+    // Initialize opacity to 0
+    bubbles.forEach(b => b.style.opacity = 0);
     bubbles.forEach(bubble => animateBubble(bubble));
   }
 });
@@ -144,6 +154,9 @@ onUnmounted(() => {
   height: 100%;
   pointer-events: none; /* Let clicks pass through */
   z-index: 1;
+  /* Hide bubbles behind the central text */
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, black 70%);
+  mask-image: radial-gradient(ellipse at center, transparent 30%, black 70%);
 }
 
 /* Track Wrapper */
@@ -157,14 +170,14 @@ onUnmounted(() => {
 
 .skill-bubble {
   position: absolute;
-  padding: 12px 24px;
+  padding: 8px 16px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-top: 1px solid rgba(255, 255, 255, 0.5); /* Extra shine on top */
   border-radius: 50px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   backdrop-filter: blur(10px);
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 500;
   font-family: 'JetBrains Mono', monospace;
   white-space: nowrap;
