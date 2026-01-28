@@ -39,7 +39,7 @@ const toggleMenu = () => {
       </ul>
 
       <div class="d-flex justify-content-center">
-        <button class="btn btn-outline-light">Contact me</button>
+        <a href="mailto:wajdijomaa9@gmail.com" class="btn btn-outline-light">Contact me</a>
       </div>
     </div>
   </div>

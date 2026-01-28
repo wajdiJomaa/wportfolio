@@ -73,7 +73,7 @@ onUnmounted(() => {
 <style scoped>
 .blogs-section {
   /* Subtle distinction from pure black body */
-  background: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
+  /* background: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%); */
   position: relative;
 }
 

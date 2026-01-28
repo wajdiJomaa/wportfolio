@@ -1,5 +1,5 @@
 <script setup>
-const particles = Array.from({ length: 20 }, (_, i) => ({
+const particles = Array.from({ length: 60 }, (_, i) => ({
   id: i,
   style: {
     top: `${Math.random() * 100}%`,
@@ -35,11 +35,11 @@ const particles = Array.from({ length: 20 }, (_, i) => ({
 
 .particle {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.5);
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 60px rgba(255, 255, 255, 0.9);
   opacity: 0;
   animation: float linear infinite;
 }

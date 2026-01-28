@@ -59,7 +59,7 @@ onUnmounted(() => {
       </div>
     </div>
       
-    <div class="row g-4 justify-content-center">
+    <div class="row g-4 justify-content-start">
       <div v-for="(project, index) in projects" :key="index" class="col-md-6 col-lg-4">
         <ProjectCard
           :title="project.title"

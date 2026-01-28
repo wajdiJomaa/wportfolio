@@ -1,6 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, computed } from 'vue';
-import anime from 'animejs';
+import { computed } from 'vue';
 
 const _skillsRaw = [
   'Python', 'Java', 'SpringBoot', 'Flask', 
@@ -8,70 +7,14 @@ const _skillsRaw = [
   "Linux", "Docker", "Postgresql", "NonSQL", "OOP", "BootStrap"
 ];
 
-const skillsRaw = _skillsRaw.concat(_skillsRaw)
+// Split skills for marquees
+const halfIndex = Math.ceil(_skillsRaw.length / 2);
+const firstHalf = _skillsRaw.slice(0, halfIndex);
+const secondHalf = _skillsRaw.slice(halfIndex);
 
-const isMobile = ref(false);
-
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768;
-};
-
-// Duplicate skills on mobile for seamless looping
-const items = computed(() => {
-  return isMobile.value ? [...skillsRaw, ...skillsRaw] : skillsRaw;
-});
-
-const getBubbleStyle = (index) => {
-  if (isMobile.value) {
-    // CSS handles positioning on mobile
-    return {};
-  }
-
-  // Desktop styles (randomly placed left/right)
-  return index % 2 === 0
-    ? { left: Math.random() * 50 + '%', top: Math.random() * 80 + '%' }
-    : { right: Math.random() * 50 + '%', top: Math.random() * 80 + '%' };
-};
-
-const animateBubble = (el) => {
-  const xRange = window.innerWidth / 10;
-  const yRange = window.innerHeight / 10;
-  const duration = anime.random(6000, 10000); // Slower movement
-
-  anime({
-    targets: el,
-    translateX: () => anime.random(-xRange, xRange),
-    translateY: () => anime.random(-yRange, yRange),
-    scale: () => 0.7,
-    opacity: [
-       { value: [0, 1], duration: duration * 0.1, easing: 'linear' },
-       { value: 1, duration: duration * 0.85 },
-       { value: 0, duration: duration * 0.05, easing: 'linear' }
-    ],
-    duration: duration,
-    delay: () => anime.random(2000, 5000),
-    easing: 'easeInOutQuad',
-    direction: 'alternate',
-    loop: true
-  });
-};
-
-onMounted(() => {
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-
-  // Only run anime.js on desktop
-  if (!isMobile.value) {
-    const bubbles = document.querySelectorAll('.skill-bubble');
-    // Initialize opacity to 0
-    bubbles.forEach(b => b.style.opacity = 0);
-    bubbles.forEach(bubble => animateBubble(bubble));
-  }
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile);
-});
+// Quadruple for smooth infinite scroll
+const topMarqueeItems = computed(() => [...firstHalf, ...firstHalf, ...firstHalf, ...firstHalf]);
+const bottomMarqueeItems = computed(() => [...secondHalf, ...secondHalf, ...secondHalf, ...secondHalf]);
 </script>
 
 <template>
@@ -89,16 +32,31 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Skill Bubbles -->
-    <div class="bubbles-container">
-      <div class="marquee-track">
-        <div 
-          v-for="(skill, index) in items" 
-          :key="`${skill}-${index}`" 
-          class="skill-bubble"
-          :style="getBubbleStyle(index)"
-        >
-          {{ skill }}
+    <!-- Marquees (Universal) -->
+    <div class="skills-marquees">
+      <!-- Top Marquee -->
+      <div class="marquee-wrapper top-marquee">
+        <div class="marquee-track">
+          <div 
+            v-for="(skill, index) in topMarqueeItems" 
+            :key="`top-${index}`" 
+            class="skill-bubble-fixed"
+          >
+            {{ skill }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Marquee -->
+      <div class="marquee-wrapper bottom-marquee">
+        <div class="marquee-track reverse-track">
+           <div 
+            v-for="(skill, index) in bottomMarqueeItems" 
+            :key="`btm-${index}`" 
+            class="skill-bubble-fixed"
+          >
+            {{ skill }}
+          </div>
         </div>
       </div>
     </div>
@@ -107,7 +65,7 @@ onUnmounted(() => {
 
 <style scoped>
 .hero-section {
-  min-height: 600px;
+  min-height: 700px;
   color: white;
   overflow: hidden; /* Keep bubbles inside */
 }
@@ -146,46 +104,6 @@ onUnmounted(() => {
   margin-top: 0.5rem;
 }
 
-/* Bubbles Container */
-.bubbles-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Let clicks pass through */
-  z-index: 1;
-  /* Hide bubbles behind the central text */
-  -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, black 70%);
-  mask-image: radial-gradient(ellipse at center, transparent 30%, black 70%);
-}
-
-/* Track Wrapper */
-.marquee-track {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.skill-bubble {
-  position: absolute;
-  padding: 8px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-top: 1px solid rgba(255, 255, 255, 0.5); /* Extra shine on top */
-  border-radius: 50px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(10px);
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 500;
-  font-family: 'JetBrains Mono', monospace;
-  white-space: nowrap;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.05), 0 0 20px rgba(255, 255, 255, 0.2);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
 /* Animations */
 @keyframes slideUpFade {
   from {
@@ -212,51 +130,53 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 768px) {
-  .bubbles-container {
-    position: absolute;
-    top: auto;
-    bottom: 15%; /* Position strip */
-    left: 0;
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  }
+/* Skills Marquees */
+.skills-marquees {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
 
-  /* Make track a flexible row that moves */
-  .marquee-track {
-    position: relative;
-    display: flex;
-    gap: 3rem;
-    width: max-content; /* Allow content to dictate width */
-    animation: scroll-track 20s linear infinite; /* Animate the whole track */
-  }
+.marquee-wrapper {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
 
-  .skill-bubble {
-    position: relative; /* Reset absolute */
-    inset: auto !important;
-    transform: none !important;
-    
-    /* Thin text style */
-    padding: 0;
-    border: none;
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.9rem;
-    font-weight: 300;
-    
-    flex-shrink: 0;
-  }
+.top-marquee {
+  top: 5%;
+}
 
-  .skill-bubble:nth-child(n+9) {
-    display: block;
-  }
+.bottom-marquee {
+  bottom: 5%;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: scroll-track 40s linear infinite;
+}
+
+.reverse-track {
+  animation: scroll-track-reverse 45s linear infinite;
+}
+
+.skill-bubble-fixed {
+  color: #ffffff;
+  opacity: 1;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
 }
 
 @keyframes scroll-track {
@@ -264,7 +184,25 @@ onUnmounted(() => {
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%); /* Move half the total width (the length of one full set) */
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-track-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 992px) {
+  .top-marquee { top: 12%; }
+  .bottom-marquee { bottom: 12%; }
+  
+  .skill-bubble-fixed {
+     font-size: 0.9rem;
   }
 }
 </style>
